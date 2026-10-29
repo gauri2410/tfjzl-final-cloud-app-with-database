@@ -14,9 +14,9 @@
       <div class="text-start mt-3">
         {% for question in questions %}
         <div class="border rounded p-3 mb-2">
-          <strong>{{ forloop.counter }}. {{ question.text }}</strong>
+          <strong>{{ forloop.counter }}. {{ question.question_text }}</strong>
           <div class="small text-success mt-1">Correct answer:
-            {% for choice in question.choice_set.all %}{% if choice.is_correct %}{{ choice.text }}{% endif %}{% endfor %}
+            {% for choice in question.choice_set.all %}{% if choice.is_correct %}{{ choice.choice_text }}{% endif %}{% endfor %}
           </div>
         </div>
         {% endfor %}

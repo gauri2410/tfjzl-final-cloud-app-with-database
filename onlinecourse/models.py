@@ -16,17 +16,16 @@ class Course(models.Model):
 
 
 class Instructor(models.Model):
-    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
+    user = models.OneToOneField(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
     full_time = models.BooleanField(default=True)
-    total_learners = models.IntegerField(default=0)
 
     def __str__(self):
         return self.user.username
 
 
 class Learner(models.Model):
-    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
-    occupation = models.CharField(max_length=20, default="student")
+    user = models.OneToOneField(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
+    occupation = models.CharField(max_length=120, blank=True)
     social_link = models.URLField(max_length=200, blank=True)
 
     def __str__(self):
@@ -34,7 +33,7 @@ class Learner(models.Model):
 
 
 class Lesson(models.Model):
-    course = models.ForeignKey(Course, on_delete=models.CASCADE)
+    course = models.ForeignKey(Course, related_name="lessons", on_delete=models.CASCADE)
     title = models.CharField(max_length=200)
     content = models.TextField()
     order = models.PositiveIntegerField(default=1)
@@ -52,36 +51,41 @@ class Enrollment(models.Model):
     BETA = "BETA"
     COURSE_MODES = [(AUDIT, "Audit"), (HONOR, "Honor"), (BETA, "BETA")]
 
-    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
+    learner = models.ForeignKey(Learner, on_delete=models.CASCADE)
     course = models.ForeignKey(Course, on_delete=models.CASCADE)
-    date_enrolled = models.DateField(default=now)
-    mode = models.CharField(max_length=5, choices=COURSE_MODES, default=AUDIT)
-    rating = models.FloatField(default=5.0)
+    enrolled_at = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f"{self.learner} - {self.course}"
 
 
 class Question(models.Model):
-    course = models.ForeignKey(Course, on_delete=models.CASCADE)
-    text = models.CharField(max_length=150)
-    grade = models.FloatField(default=1.0)
+    lesson = models.ForeignKey(
+        Lesson, related_name="questions", on_delete=models.CASCADE
+    )
+    question_text = models.CharField(max_length=150)
+    grade = models.PositiveIntegerField(default=1)
 
     def __str__(self):
-        return self.text
+        return self.question_text
 
     def is_get_score(self, selected_ids):
-        all_answers = self.choice_set.filter(is_correct=True).count()
-        selected_correct = self.choice_set.filter(
-            is_correct=True, id__in=selected_ids
-        ).count()
-        return all_answers == selected_correct
+        correct_ids = set(self.choices.filter(is_correct=True).values_list("id", flat=True))
+        selected_ids = set(selected_ids)
+        question_ids = set(self.choices.values_list("id", flat=True))
+        selected_for_question = selected_ids.intersection(question_ids)
+        return bool(correct_ids) and selected_for_question == correct_ids
 
 
 class Choice(models.Model):
-    question = models.ForeignKey(Question, on_delete=models.CASCADE)
-    text = models.CharField(max_length=150)
+    question = models.ForeignKey(
+        Question, related_name="choices", on_delete=models.CASCADE
+    )
+    choice_text = models.CharField(max_length=150)
     is_correct = models.BooleanField(default=False)
 
     def __str__(self):
-        return self.text
+        return self.choice_text
 
 
 class Submission(models.Model):
@@ -89,7 +93,4 @@ class Submission(models.Model):
     choices = models.ManyToManyField(Choice)
 
     def __str__(self):
-        return f"{self.enrollment.user.username} - {self.enrollment.course.name}"
-
-    def __str__(self):
-        return f"{self.lesson.title} - {self.score}/{self.total_questions}"
+        return f"Submission for {self.enrollment}"

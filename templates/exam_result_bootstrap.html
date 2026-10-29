@@ -1,0 +1,29 @@
+{% extends "base.html" %}
+{% block title %}Exam result | OnlineCourse{% endblock %}
+{% block content %}
+<div class="row justify-content-center"><div class="col-lg-8">
+  <div class="card border-0 shadow text-center">
+    <div class="card-body p-5">
+      <div class="display-1 mb-3">🎉</div>
+      <h1 class="text-success fw-bold">Congratulations!</h1>
+      <p class="lead">You completed the {{ submission.enrollment.course.name }} exam.</p>
+      <div class="display-4 fw-bold text-primary my-3">{{ total_score }} / {{ possible_score }}</div>
+      <p class="fs-5">Score: <strong>{{ total_score }}</strong> / {{ possible_score }}</p>
+      <hr>
+      <h2 class="h5 text-start">Exam results</h2>
+      <div class="text-start mt-3">
+        {% for result in question_results %}
+        <div class="border rounded p-3 mb-2">
+          <strong>{{ forloop.counter }}. {{ result.question_text }}</strong>
+          <div class="small text-success mt-1">Correct answer: {{ result.correct_answers|join:", " }}
+          </div>
+        </div>
+        {% endfor %}
+      </div>
+      <div class="progress" role="progressbar" aria-valuenow="{{ total_score }}" aria-valuemin="0" aria-valuemax="{{ possible_score }}">
+        <div class="progress-bar bg-success" style="width: {% widthratio total_score possible_score 100 %}%">{% widthratio total_score possible_score 100 %}%</div>
+      </div>
+    </div>
+  </div>
+</div></div>
+{% endblock %}

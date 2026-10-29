@@ -26,7 +26,7 @@ class QuestionInline(admin.StackedInline):
 
 @admin.register(Question)
 class QuestionAdmin(admin.ModelAdmin):
-    list_display = ("text", "course", "grade")
+    list_display = ("question_text", "course", "grade")
     list_filter = ("course",)
     inlines = [ChoiceInline]
 
@@ -36,18 +36,18 @@ class LessonAdmin(admin.ModelAdmin):
     list_display = ("title", "course", "order")
     list_filter = ("course",)
     search_fields = ("title", "course__name")
-    inlines = [QuestionInline]
 
 
 @admin.register(Course)
 class CourseAdmin(admin.ModelAdmin):
     list_display = ("name",)
     search_fields = ("name",)
+    inlines = [QuestionInline]
 
 
 @admin.register(Choice)
 class ChoiceAdmin(admin.ModelAdmin):
-    list_display = ("text", "question", "is_correct")
+    list_display = ("choice_text", "question", "is_correct")
     list_filter = ("is_correct",)
 
 
@@ -65,7 +65,6 @@ class InstructorAdmin(admin.ModelAdmin):
 @admin.register(Learner)
 class LearnerAdmin(admin.ModelAdmin):
     list_display = ("user",)
-    filter_horizontal = ("courses",)
 
 
 admin.site.unregister(User)
