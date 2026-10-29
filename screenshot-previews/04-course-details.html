@@ -1,0 +1,21 @@
+<!doctype html><meta charset="utf-8"><title>04-course-details</title><style>body{margin:0;background:#1e1e1e;color:#d4d4d4;font:15px Consolas,monospace}header{background:#252526;color:#9cdcfe;padding:18px 28px;font:18px Arial}pre{padding:24px 32px;line-height:1.55}.tag{color:#569cd6}.attr{color:#9cdcfe}.str{color:#ce9178}</style><header>templates/course_details_bootstrap.html</header><pre>{% extends <span class="str">"base.html"</span> %}
+{% block title %}{{ course.name }} | OnlineCourse{% endblock %}
+{% block content %}
+&lt;div class=<span class="str">"row justify-content-center"</span>&gt;
+  &lt;div class=<span class="str">"col-lg-9"</span>&gt;
+    &lt;h1 class=<span class="str">"display-6 fw-bold"</span>&gt;{{ course.name }}&lt;/h1&gt;
+    &lt;p class=<span class="str">"lead text-secondary"</span>&gt;{{ course.description }}&lt;/p&gt;
+    &lt;h2 class=<span class="str">"h4 mb-3"</span>&gt;Lessons&lt;/h2&gt;
+    &lt;div class=<span class="str">"list-group shadow-sm"</span>&gt;
+      {% for lesson in course.lesson_set.all %}
+      &lt;div class=<span class="str">"list-group-item p-4 d-flex justify-content-between"</span>&gt;
+        &lt;strong&gt;{{ lesson.title }}&lt;/strong&gt;
+        &lt;a class=<span class="str">"btn btn-outline-primary"</span>
+           href=<span class="str">"{% url 'submit' course.id %}"</span>&gt;Take exam&lt;/a&gt;
+      &lt;/div&gt;
+      {% empty %}&lt;div class=<span class="str">"list-group-item"</span>&gt;No lessons added.&lt;/div&gt;
+      {% endfor %}
+    &lt;/div&gt;
+  &lt;/div&gt;
+&lt;/div&gt;
+{% endblock %}</pre>

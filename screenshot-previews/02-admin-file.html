@@ -1,0 +1,35 @@
+<!doctype html><meta charset="utf-8"><title>02-admin-file</title><style>body{margin:0;background:#1e1e1e;color:#d4d4d4;font:15px Consolas,monospace}header{background:#252526;color:#9cdcfe;padding:18px 28px;font:18px Arial}pre{padding:22px 30px;line-height:1.48}.kw{color:#569cd6}.cls{color:#4ec9b0}.str{color:#ce9178}</style><header>onlinecourse/admin.py</header><pre><span class="kw">from</span> django.contrib <span class="kw">import</span> admin
+
+<span class="kw">from</span> .models <span class="kw">import</span> Choice, Course, Instructor, Learner, Lesson, Question, Submission
+
+<span class="kw">class</span> <span class="cls">LessonInline</span>(admin.StackedInline):
+    model = Lesson
+    extra = 5
+
+<span class="kw">class</span> <span class="cls">ChoiceInline</span>(admin.StackedInline):
+    model = Choice
+    extra = 2
+
+<span class="kw">class</span> <span class="cls">QuestionInline</span>(admin.StackedInline):
+    model = Question
+    extra = 2
+
+<span class="kw">class</span> <span class="cls">QuestionAdmin</span>(admin.ModelAdmin):
+    inlines = [ChoiceInline]
+    list_display = [<span class="str">"question_text"</span>]
+
+<span class="kw">class</span> <span class="cls">CourseAdmin</span>(admin.ModelAdmin):
+    inlines = [LessonInline]
+    list_display = [<span class="str">"name"</span>, <span class="str">"description"</span>]
+    search_fields = [<span class="str">"name"</span>, <span class="str">"description"</span>]
+
+<span class="kw">class</span> <span class="cls">LessonAdmin</span>(admin.ModelAdmin):
+    list_display = [<span class="str">"title"</span>]
+
+admin.site.register(Course, CourseAdmin)
+admin.site.register(Lesson, LessonAdmin)
+admin.site.register(Instructor)
+admin.site.register(Learner)
+admin.site.register(Question, QuestionAdmin)
+admin.site.register(Choice)
+admin.site.register(Submission)</pre>

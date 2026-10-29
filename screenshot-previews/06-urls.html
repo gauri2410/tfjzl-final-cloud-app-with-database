@@ -1,0 +1,16 @@
+<!doctype html><meta charset="utf-8"><title>06-urls</title><style>body{margin:0;background:#1e1e1e;color:#d4d4d4;font:16px Consolas,monospace}header{background:#252526;color:#9cdcfe;padding:18px 28px;font:18px Arial}pre{padding:30px;line-height:1.65}.kw{color:#569cd6}.str{color:#ce9178}</style><header>onlinecourse/urls.py</header><pre><span class="kw">from</span> django.contrib <span class="kw">import</span> admin
+<span class="kw">from</span> django.urls <span class="kw">import</span> path
+<span class="kw">from</span> . <span class="kw">import</span> views
+
+urlpatterns = [
+    path(<span class="str">"admin/"</span>, admin.site.urls),
+    path(<span class="str">"course/&lt;int:course_id&gt;/"</span>,
+         views.course_details, name=<span class="str">"course_details"</span>),
+    path(<span class="str">"&lt;int:course_id&gt;/submit/"</span>,
+         views.submit, name=<span class="str">"submit"</span>),
+    path(
+        <span class="str">"course/&lt;int:course_id&gt;/submission/&lt;int:submission_id&gt;/result/"</span>,
+        views.show_exam_result,
+        name=<span class="str">"show_exam_result"</span>,
+    ),
+]</pre>

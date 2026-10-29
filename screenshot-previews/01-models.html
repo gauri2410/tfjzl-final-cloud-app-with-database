@@ -1,0 +1,31 @@
+<!doctype html><meta charset="utf-8"><title>01-models</title><style>body{margin:0;background:#1e1e1e;color:#d4d4d4;font:16px Consolas,monospace}header{background:#252526;color:#9cdcfe;padding:18px 28px;font:18px Arial}pre{padding:25px 35px;line-height:1.55}.kw{color:#569cd6}.cls{color:#4ec9b0}.str{color:#ce9178}.field{color:#9cdcfe}</style><header>onlinecourse/models.py</header><pre><span class="kw">class</span> <span class="cls">Question</span>(models.Model):
+    course = models.ForeignKey(Course, on_delete=models.CASCADE)
+    question_text = models.CharField(max_length=500)
+    grade = models.IntegerField(default=1)
+
+    <span class="kw">def</span> is_get_score(self, selected_ids):
+        all_answers = self.choice_set.filter(is_correct=True).count()
+        selected_correct = self.choice_set.filter(
+            is_correct=True, id__in=selected_ids
+        ).count()
+        return all_answers == selected_correct
+
+    <span class="kw">def</span> __str__(self):
+        return <span class="str">"Question: "</span> + self.question_text
+
+
+<span class="kw">class</span> <span class="cls">Choice</span>(models.Model):
+    question = models.ForeignKey(Question, on_delete=models.CASCADE)
+    choice_text = models.CharField(max_length=500)
+    is_correct = models.BooleanField(default=False)
+
+    <span class="kw">def</span> __str__(self):
+        return <span class="str">"Choice: "</span> + self.choice_text
+
+
+<span class="kw">class</span> <span class="cls">Submission</span>(models.Model):
+    enrollment = models.ForeignKey(Enrollment, on_delete=models.CASCADE)
+    choices = models.ManyToManyField(Choice)
+
+    <span class="kw">def</span> __str__(self):
+        return f<span class="str">"Submission by {self.enrollment}"</span></pre>

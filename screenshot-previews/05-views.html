@@ -1,0 +1,41 @@
+<!doctype html><meta charset="utf-8"><title>05-views</title><style>body{margin:0;background:#1e1e1e;color:#d4d4d4;font:14px Consolas,monospace}header{background:#252526;color:#9cdcfe;padding:18px 28px;font:18px Arial}pre{padding:22px 30px;line-height:1.48}.kw{color:#569cd6}.str{color:#ce9178}.fn{color:#dcdcaa}</style><header>onlinecourse/views.py</header><pre><span class="kw">def</span> <span class="fn">submit</span>(request, course_id):
+    course = get_object_or_404(Course, pk=course_id)
+    enrollment, _ = Enrollment.objects.get_or_create(
+        course=course, learner=learner
+    )
+    <span class="kw">if</span> request.method == <span class="str">"POST"</span>:
+        selected_ids = []
+        <span class="kw">for</span> key, value <span class="kw">in</span> request.POST.items():
+            <span class="kw">if</span> key.startswith(<span class="str">"choice_"</span>):
+                selected_ids.append(value)
+        submission = Submission.objects.create(enrollment=enrollment)
+        submission.choices.set(Choice.objects.filter(pk__in=selected_ids))
+        <span class="kw">return</span> redirect(
+            <span class="str">"show_exam_result"</span>, course_id=course.pk,
+            submission_id=submission.pk
+        )
+
+<span class="kw">def</span> <span class="fn">show_exam_result</span>(request, course_id, submission_id):
+    course = get_object_or_404(Course, pk=course_id)
+    submission = get_object_or_404(
+        Submission, pk=submission_id, enrollment__course=course
+    )
+    selected_ids = set(submission.choices.values_list(<span class="str">"id"</span>, flat=True))
+    questions = Question.objects.filter(course=course).prefetch_related(<span class="str">"choice_set"</span>)
+    grade = 0
+    possible = 0
+    question_results = []
+    <span class="kw">for</span> question <span class="kw">in</span> questions:
+        possible += question.grade
+        <span class="kw">if</span> question.is_get_score(selected_ids):
+            grade += question.grade
+        question_results.append({
+            <span class="str">"question_text"</span>: question.question_text,
+            <span class="str">"correct_answers"</span>: [
+                c.choice_text <span class="kw">for</span> c <span class="kw">in</span> question.choice_set.all() <span class="kw">if</span> c.is_correct
+            ],
+        })
+    <span class="kw">return</span> render(request, <span class="str">"exam_result_bootstrap.html"</span>, {
+        <span class="str">"selected_ids"</span>: selected_ids, <span class="str">"grade"</span>: grade,
+        <span class="str">"possible"</span>: possible, <span class="str">"question_results"</span>: question_results
+    })</pre>
