@@ -6,8 +6,8 @@ from . import views
 urlpatterns = [
     path("admin/", admin.site.urls),
     path("course/<int:course_id>/", views.course_details, name="course_details"),
-    path("submit/<int:lesson_id>/", views.submit, name="submit"),
-    path("lesson/<int:lesson_id>/submit/", views.submit, name="lesson_submit"),
+    path("submit/<int:course_id>/", views.submit, name="submit"),
+    path("lesson/<int:course_id>/submit/", views.submit, name="lesson_submit"),
     path(
         "exam/result/<int:submission_id>/",
         views.show_exam_result,

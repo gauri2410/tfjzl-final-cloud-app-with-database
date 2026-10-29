@@ -1,14 +1,14 @@
 {% extends "base.html" %}
-{% block title %}{{ lesson.title }} exam | OnlineCourse{% endblock %}
+{% block title %}{{ course.name }} exam | OnlineCourse{% endblock %}
 {% block content %}
 <div class="row justify-content-center"><div class="col-lg-8">
-  <h1 class="fw-bold mb-1">{{ lesson.title }}</h1><p class="text-secondary mb-4">Answer every question, then submit your attempt.</p>
+  <h1 class="fw-bold mb-1">{{ course.name }}</h1><p class="text-secondary mb-4">Answer every question, then submit your attempt.</p>
   <form method="post" class="card border-0 shadow-sm"><div class="card-body p-4">
     {% csrf_token %}
     {% for question in questions %}
-    <fieldset class="mb-4"><legend class="h5">{{ forloop.counter }}. {{ question.question_text }}</legend>
+    <fieldset class="mb-4"><legend class="h5">{{ forloop.counter }}. {{ question.text }}</legend>
       {% for choice in question.choice_set.all %}
-      <div class="form-check my-2"><input class="form-check-input" type="radio" name="question_{{ question.id }}" value="{{ choice.id }}" id="choice{{ choice.id }}" required><label class="form-check-label" for="choice{{ choice.id }}">{{ choice.choice_text }}</label></div>
+      <div class="form-check my-2"><input class="form-check-input" type="radio" name="question_{{ question.id }}" value="{{ choice.id }}" id="choice{{ choice.id }}" required><label class="form-check-label" for="choice{{ choice.id }}">{{ choice.text }}</label></div>
       {% endfor %}
     </fieldset>
     {% endfor %}

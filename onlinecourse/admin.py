@@ -26,9 +26,8 @@ class QuestionInline(admin.StackedInline):
 
 @admin.register(Question)
 class QuestionAdmin(admin.ModelAdmin):
-    list_display = ("question_text", "lesson", "order")
-    list_filter = ("lesson__course",)
-    ordering = ("lesson", "order")
+    list_display = ("text", "course", "grade")
+    list_filter = ("course",)
     inlines = [ChoiceInline]
 
 
@@ -48,20 +47,19 @@ class CourseAdmin(admin.ModelAdmin):
 
 @admin.register(Choice)
 class ChoiceAdmin(admin.ModelAdmin):
-    list_display = ("choice_text", "question", "is_correct")
+    list_display = ("text", "question", "is_correct")
     list_filter = ("is_correct",)
 
 
 @admin.register(Submission)
 class SubmissionAdmin(admin.ModelAdmin):
-    list_display = ("lesson", "user", "score", "total_questions", "submitted_at")
-    readonly_fields = ("submitted_at",)
+    list_display = ("enrollment",)
+    filter_horizontal = ("choices",)
 
 
 @admin.register(Instructor)
 class InstructorAdmin(admin.ModelAdmin):
     list_display = ("user",)
-    filter_horizontal = ("courses",)
 
 
 @admin.register(Learner)

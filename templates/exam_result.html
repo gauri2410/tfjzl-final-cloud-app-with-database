@@ -6,16 +6,25 @@
     <div class="card-body p-5">
       <div class="display-1 mb-3">🎉</div>
       <h1 class="text-success fw-bold">Congratulations!</h1>
-      <p class="lead">You completed the {{ submission.lesson.title }} exam.</p>
-      <div class="display-4 fw-bold text-primary my-3">{{ submission.percentage }}%</div>
-      <p class="fs-5">Score: <strong>{{ submission.score }}</strong> / {{ submission.total_questions }}</p>
+      <p class="lead">You completed the {{ submission.enrollment.course.name }} exam.</p>
+      <div class="display-4 fw-bold text-primary my-3">{{ percentage }}%</div>
+      <p class="fs-5">Score: <strong>{{ score }}</strong> / {{ total_questions }}</p>
       <hr>
       <h2 class="h5 text-start">Exam results</h2>
-      <div class="progress" role="progressbar" aria-valuenow="{{ submission.percentage }}" aria-valuemin="0" aria-valuemax="100">
-        <div class="progress-bar bg-success" style="width: {{ submission.percentage }}%">{{ submission.percentage }}%</div>
+      <div class="text-start mt-3">
+        {% for question in questions %}
+        <div class="border rounded p-3 mb-2">
+          <strong>{{ forloop.counter }}. {{ question.text }}</strong>
+          <div class="small text-success mt-1">Correct answer:
+            {% for choice in question.choice_set.all %}{% if choice.is_correct %}{{ choice.text }}{% endif %}{% endfor %}
+          </div>
+        </div>
+        {% endfor %}
+      </div>
+      <div class="progress" role="progressbar" aria-valuenow="{{ percentage }}" aria-valuemin="0" aria-valuemax="100">
+        <div class="progress-bar bg-success" style="width: {{ percentage }}%">{{ percentage }}%</div>
       </div>
     </div>
   </div>
 </div></div>
 {% endblock %}
-
