@@ -2,7 +2,15 @@ from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin
 from django.contrib.auth.models import Group, User
 
-from .models import Choice, Course, Lesson, Question, Submission
+from .models import (
+    Choice,
+    Course,
+    Instructor,
+    Learner,
+    Lesson,
+    Question,
+    Submission,
+)
 
 
 class ChoiceInline(admin.TabularInline):
@@ -18,7 +26,7 @@ class QuestionInline(admin.StackedInline):
 
 @admin.register(Question)
 class QuestionAdmin(admin.ModelAdmin):
-    list_display = ("text", "lesson", "order")
+    list_display = ("question_text", "lesson", "order")
     list_filter = ("lesson__course",)
     ordering = ("lesson", "order")
     inlines = [ChoiceInline]
@@ -40,7 +48,7 @@ class CourseAdmin(admin.ModelAdmin):
 
 @admin.register(Choice)
 class ChoiceAdmin(admin.ModelAdmin):
-    list_display = ("text", "question", "is_correct")
+    list_display = ("choice_text", "question", "is_correct")
     list_filter = ("is_correct",)
 
 
@@ -50,8 +58,19 @@ class SubmissionAdmin(admin.ModelAdmin):
     readonly_fields = ("submitted_at",)
 
 
+@admin.register(Instructor)
+class InstructorAdmin(admin.ModelAdmin):
+    list_display = ("user",)
+    filter_horizontal = ("courses",)
+
+
+@admin.register(Learner)
+class LearnerAdmin(admin.ModelAdmin):
+    list_display = ("user",)
+    filter_horizontal = ("courses",)
+
+
 admin.site.unregister(User)
 admin.site.register(User, UserAdmin)
 admin.site.unregister(Group)
 admin.site.register(Group)
-

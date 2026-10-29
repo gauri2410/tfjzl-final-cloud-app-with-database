@@ -12,7 +12,7 @@
     </div>
     <h2 class="h4 mb-3">Lessons</h2>
     <div class="list-group shadow-sm">
-      {% for lesson in course.lessons.all %}
+      {% for lesson in course.lesson_set.all %}
       <div class="list-group-item p-4 d-flex justify-content-between align-items-center">
         <div><span class="badge rounded-pill text-bg-light me-2">{{ forloop.counter }}</span><strong>{{ lesson.title }}</strong></div>
         <a class="btn btn-outline-primary" href="{% url 'submit' lesson.id %}">Take exam</a>
@@ -24,4 +24,3 @@
   </div>
 </div>
 {% endblock %}
-
