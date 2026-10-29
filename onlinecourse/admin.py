@@ -1,73 +1,42 @@
 from django.contrib import admin
-from django.contrib.auth.admin import UserAdmin
-from django.contrib.auth.models import Group, User
 
-from .models import (
-    Choice,
-    Course,
-    Instructor,
-    Learner,
-    Lesson,
-    Question,
-    Submission,
-)
+from .models import Choice, Course, Instructor, Learner, Lesson, Question, Submission
 
 
-class ChoiceInline(admin.TabularInline):
+class LessonInline(admin.StackedInline):
+    model = Lesson
+    extra = 5
+
+
+class ChoiceInline(admin.StackedInline):
     model = Choice
     extra = 2
 
 
 class QuestionInline(admin.StackedInline):
     model = Question
-    extra = 1
-    show_change_link = True
+    extra = 2
 
 
-@admin.register(Question)
 class QuestionAdmin(admin.ModelAdmin):
-    list_display = ("question_text", "course", "grade")
-    list_filter = ("course",)
     inlines = [ChoiceInline]
+    list_display = ["question_text"]
 
 
-@admin.register(Lesson)
-class LessonAdmin(admin.ModelAdmin):
-    list_display = ("title", "course", "order")
-    list_filter = ("course",)
-    search_fields = ("title", "course__name")
-
-
-@admin.register(Course)
 class CourseAdmin(admin.ModelAdmin):
-    list_display = ("name",)
-    search_fields = ("name",)
-    inlines = [QuestionInline]
+    inlines = [LessonInline]
+    list_display = ["name", "description"]
+    search_fields = ["name", "description"]
 
 
-@admin.register(Choice)
-class ChoiceAdmin(admin.ModelAdmin):
-    list_display = ("choice_text", "question", "is_correct")
-    list_filter = ("is_correct",)
+class LessonAdmin(admin.ModelAdmin):
+    list_display = ["title"]
 
 
-@admin.register(Submission)
-class SubmissionAdmin(admin.ModelAdmin):
-    list_display = ("enrollment",)
-    filter_horizontal = ("choices",)
-
-
-@admin.register(Instructor)
-class InstructorAdmin(admin.ModelAdmin):
-    list_display = ("user",)
-
-
-@admin.register(Learner)
-class LearnerAdmin(admin.ModelAdmin):
-    list_display = ("user",)
-
-
-admin.site.unregister(User)
-admin.site.register(User, UserAdmin)
-admin.site.unregister(Group)
-admin.site.register(Group)
+admin.site.register(Course, CourseAdmin)
+admin.site.register(Lesson, LessonAdmin)
+admin.site.register(Instructor)
+admin.site.register(Learner)
+admin.site.register(Question, QuestionAdmin)
+admin.site.register(Choice)
+admin.site.register(Submission)

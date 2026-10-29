@@ -34,7 +34,7 @@ def submit(request, course_id):
             submission_id=submission.pk,
         )
     questions = list(
-        Question.objects.filter(lesson__course=course).prefetch_related("choices")
+        Question.objects.filter(course=course).prefetch_related("choice_set")
     )
     return render(request, "exam.html", {"course": course, "questions": questions})
 
@@ -45,12 +45,12 @@ def show_exam_result(request, course_id, submission_id):
         Submission, pk=submission_id, enrollment__course=course
     )
     selected_ids = set(submission.choices.values_list("id", flat=True))
-    questions = Question.objects.filter(lesson__course=course).prefetch_related("choices")
+    questions = Question.objects.filter(course=course).prefetch_related("choice_set")
     total = 0
     score = 0
     question_results = []
     for question in questions:
-        question_choices = list(question.choices.all())
+        question_choices = list(question.choice_set.all())
         correct = [choice for choice in question_choices if choice.is_correct]
         selected = [choice for choice in question_choices if choice.id in selected_ids]
         is_correct = question.is_get_score(selected_ids)
