@@ -18,6 +18,16 @@ class Migration(migrations.Migration):
         migrations.AlterField(
             model_name="question",
             name="grade",
-            field=models.IntegerField(default=1),
+            field=models.IntegerField(default=0),
+        ),
+        migrations.AlterField(
+            model_name="question",
+            name="question_text",
+            field=models.TextField(),
+        ),
+        migrations.AlterField(
+            model_name="choice",
+            name="choice_text",
+            field=models.TextField(),
         ),
     ]
