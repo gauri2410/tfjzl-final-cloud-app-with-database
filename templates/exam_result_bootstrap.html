@@ -17,6 +17,7 @@
           <strong>{{ forloop.counter }}. {{ result.question_text }}</strong>
           <div class="small text-success mt-1">Correct answer: {{ result.correct_answers|join:", " }}
           </div>
+          <div class="small text-secondary">Your answer: {{ result.selected_answers|join:", "|default:"Not answered" }}</div>
         </div>
         {% endfor %}
       </div>
